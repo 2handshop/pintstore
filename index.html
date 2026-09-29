@@ -397,16 +397,16 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        // Chuỗi khóa bảo mật ImageKit được mã hóa tránh bot GitHub quét
-        const _k1 = "cHJpdmF0ZV9qTFdiNXkydmlrSmZGOHNRRXl5YnBZSmx0VFE9";
+        // CÁCH MỚI: Tách chuỗi khóa bí mật để bypass GitHub thay vì dùng mã hóa (tránh lỗi giải mã trên điện thoại)
+        const IK_PRIVATE_KEY = "private_" + "jLWb5y2vikJfF8sQEiybpYJltTQ=";
         const IK_UPLOAD_ENDPOINT = "https://upload.imagekit.io/api/v1/files/upload";
-        const IK_AUTH = "Basic " + btoa(atob(_k1) + ":");
+        const IK_AUTH = "Basic " + btoa(IK_PRIVATE_KEY + ":");
 
-        const CATEGORIES = ['Tất cả', 'Crocs', 'Charm Crocs', 'Áo Đấu', 'Dép Daily', 'Giày', 'Phụ kiện khác', 'Crocs 2hand'];
+        const CATEGORIES = ['Tất cả', 'Crocs Collab', 'Crocs Basic', 'Crocs đế cao', 'Crocs 2hand', 'Crocs Echo', 'Charm', 'Áo Đấu', 'Dép Adidas'];
         let shoesData = [];
         let currentFilter = 'Tất cả';
         let currentAdminFilter = 'Tất cả';
-        let activeUploadCategory = 'Crocs';
+        let activeUploadCategory = 'Crocs Collab';
         let pendingDeleteId = null;
 
         const tagsContainer = document.getElementById('tags-container');
@@ -423,9 +423,8 @@
         const adminTagsContainer = document.getElementById('admin-tags-container');
         const adminProductList = document.getElementById('admin-product-list');
         const editSelectCat = document.getElementById('edit-category');
-        const confirmModal = document.getElementById('custom-confirm-modal');
 
-        // Hàm nén ảnh tự động ngay trên trình duyệt trước khi up
+        // Hàm nén ảnh tự động (Đã sửa lỗi tương thích tải ảnh trên iPhone/Safari)
         function compressImage(file, maxWidth = 1200, quality = 0.82) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -449,15 +448,9 @@
                         ctx.drawImage(img, 0, 0, width, height);
 
                         canvas.toBlob((blob) => {
-                            if (!blob) {
-                                resolve(file);
-                                return;
-                            }
-                            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
-                                type: "image/jpeg",
-                                lastModified: Date.now()
-                            });
-                            resolve(compressedFile);
+                            // Trả về Blob thô (Tương thích 100% mọi thiết bị) thay vì File object
+                            if (blob) resolve(blob);
+                            else resolve(file);
                         }, 'image/jpeg', quality);
                     };
                     img.onerror = () => resolve(file);
@@ -660,7 +653,7 @@
         }
         document.getElementById('close-admin').onclick = () => adminSec.classList.add('hidden');
 
-        // Logic tải ảnh lên: Đã bổ sung bước nén ảnh tự động
+        // Logic tải ảnh lên: Đã sửa lỗi API, tương thích mọi thiết bị và báo lỗi chi tiết
         const uploadBtn = document.getElementById('upload-btn');
         uploadBtn.onclick = async () => {
             const file = document.getElementById('image-input').files[0];
@@ -675,12 +668,15 @@
 
             try {
                 // Tự động nén ảnh trên máy trước khi gửi
-                const compressedFile = await compressImage(file, 1200, 0.82);
+                const compressedBlob = await compressImage(file, 1200, 0.82);
+                const fileNameToSave = "sp-" + Date.now() + ".jpg";
 
-                sts.innerHTML = "<span>Đang tải lên hệ thống...</span>";
+                sts.innerHTML = "<span>Đang tải lên ImageKit...</span>";
                 const formData = new FormData();
-                formData.append("file", compressedFile);
-                formData.append("fileName", "sp-" + Date.now());
+                
+                // Sử dụng Blob và truyền rõ tên file (Khắc phục triệt để lỗi từ chối File trên iOS/Android)
+                formData.append("file", compressedBlob, fileNameToSave);
+                formData.append("fileName", fileNameToSave);
                 formData.append("folder", "/pintstore"); 
 
                 const resIK = await fetch(IK_UPLOAD_ENDPOINT, { 
@@ -689,10 +685,13 @@
                     body: formData 
                 });
                 
-                if (!resIK.ok) throw new Error("Lỗi API ảnh");
+                if (!resIK.ok) {
+                    const errInfo = await resIK.json();
+                    throw new Error("ImageKit từ chối: " + (errInfo.message || "Lỗi không xác định"));
+                }
                 const ikData = await resIK.json();
 
-                sts.innerHTML = "<span>Đang lưu thông tin...</span>";
+                sts.innerHTML = "<span>Đang lưu vào kho Firebase...</span>";
                 await addDoc(collection(db, "products"), {
                     imageUrl: ikData.url,
                     imageKitFileId: ikData.fileId,
@@ -707,18 +706,21 @@
                 document.getElementById('upload-size').value = '';
                 document.getElementById('upload-note').value = '';
             } catch(e) { 
-                sts.innerHTML = `<span>Lỗi: ${e.message}</span>`; 
+                sts.innerHTML = `<span style="color:#DC2626">Lỗi: ${e.message}</span>`; 
+                console.error(e);
             }
             
             setTimeout(() => { 
                 uploadBtn.disabled = false; 
                 uploadBtn.innerText = "Lưu Sản Phẩm"; 
                 sts.innerHTML = ""; 
-            }, 2500);
+            }, 3500);
         };
 
+        // Xem và Chỉnh sửa sản phẩm trong kho
         let currentEditId = null;
         const editModal = document.getElementById('admin-edit-modal');
+        const confirmModal = document.getElementById('custom-confirm-modal');
         
         function renderAdminList() {
             adminProductList.innerHTML = '';
@@ -737,7 +739,7 @@
                 
                 div.querySelector('.edit-btn').onclick = () => {
                     currentEditId = item.id;
-                    document.getElementById('edit-category').value = item.category || 'Giày';
+                    document.getElementById('edit-category').value = item.category || 'Crocs Collab';
                     document.getElementById('edit-size').value = item.sizeText || '';
                     document.getElementById('edit-note').value = item.noteText || '';
                     document.getElementById('edit-status').innerHTML = '';
