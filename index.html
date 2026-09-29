@@ -8,10 +8,10 @@
     <meta property="og:title" content="PINT STORE">
     <meta property="og:description" content="PINT STORE - CROCS AND MORE - ONLY AUTHENTIC">
     <meta property="og:type" content="website">
-    <!-- Sử dụng đúng link ImgBB gốc và tỷ lệ cũ -->
-    <meta property="og:image" content="https://i.ibb.co/HDBcfbSP/Gemini-Generated-Image-d4v757d4v757d4v7.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <!-- Đường link ImgBB chuẩn định dạng JPG siêu nhẹ -->
+    <meta property="og:image" content="https://i.ibb.co/60d4J29G/thumb.jpg">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     
     <title>PINT STORE - Authentic Only</title>
@@ -179,7 +179,7 @@
     <!-- Lá trang trí ngầm 2 -->
     <svg class="leaf-bg animate-float w-96 h-96 top-1/2 -right-24 text-green-700" style="animation-delay: -3s;" fill="currentColor" viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22l1-2.3A4.49,4.49 0 0,0 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25V8.25C13,7.25 19,7 19,7C17.5,10 13.5,11.5 9,12.5V14.5C14.5,13.5 17,11 17,8Z"/></svg>
 
-    <!-- Header đã bỏ dấu gạch ngang -->
+    <!-- Header -->
     <header class="w-full bg-transparent pt-12 pb-6 px-4 flex flex-col justify-center items-center cursor-pointer transition duration-300 relative z-10" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">
         <h1 class="text-[36px] md:text-[56px] font-bold tracking-tight uppercase text-[#14532D]">
             PINT STORE
@@ -189,7 +189,7 @@
         </p>
     </header>
 
-    <!-- Menu Sticky phân loại dạng Glassmorphism -->
+    <!-- Menu Sticky -->
     <nav class="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-y border-[#DCFCE7] py-3.5 md:py-4 transition-all">
         <div class="max-w-[1905px] mx-auto w-full">
             <div id="tags-container" class="flex flex-wrap gap-2.5 px-3 md:px-4 justify-center items-center">
@@ -366,7 +366,7 @@
             </div>
         </div>
 
-        <!-- Custom Modal Xác nhận Xóa (Thay thế hộp thoại alert/confirm hệ thống) -->
+        <!-- Custom Modal Xác nhận Xóa -->
         <div id="custom-confirm-modal" class="fixed inset-0 z-[85] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div class="bg-white border border-[#DCFCE7] rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl animate-fade-in">
                 <div class="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -376,7 +376,7 @@
                 <p class="text-[14px] text-[#15803D] mb-6">Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm này khỏi kho hàng không?</p>
                 <div class="flex gap-3">
                     <button id="confirm-cancel-btn" class="flex-1 btn-outline py-2.5 text-[14px]">Hủy</button>
-                    <button id="confirm-delete-btn" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium rounded-full py-2.5 text-[14px] transition-all shadow-md hover:shadow-lg">Xóa ngay</button>
+                    <button id="confirm-delete-btn" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium rounded-full py-2.5 text-[14px] transition-all shadow-md hover:shadow-lg border-none">Xóa ngay</button>
                 </div>
             </div>
         </div>
@@ -407,9 +407,8 @@
         let currentFilter = 'Tất cả';
         let currentAdminFilter = 'Tất cả';
         let activeUploadCategory = 'Crocs';
-        let pendingDeleteId = null; // Biến lưu ID sản phẩm chờ xóa
+        let pendingDeleteId = null;
 
-        // Elements
         const tagsContainer = document.getElementById('tags-container');
         const catalogGrid = document.getElementById('catalog-grid');
         const loader = document.getElementById('loader');
