@@ -5,17 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="PINT STORE - CROCS AND MORE - ONLY AUTHENTIC">
     
-    <!-- Open Graph Data cho Zalo & Facebook -->
-    <meta property="og:title" content="PINT STORE - Crocs and More">
+    <meta property="og:title" content="PINT STORE">
     <meta property="og:description" content="PINT STORE - CROCS AND MORE - ONLY AUTHENTIC">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://2handshop.github.io/pintstore/">
-    <meta property="og:image" content="https://2handshop.github.io/pintstore/thumb.png">
-    <meta property="og:image:secure_url" content="https://2handshop.github.io/pintstore/thumb.png">
-    <meta property="og:image:type" content="image/png">
-    <!-- Đã sửa thành 1024 để khớp với ảnh vuông, giúp Zalo dễ nhận diện -->
-    <meta property="og:image:width" content="1024">
-    <meta property="og:image:height" content="1024">
+    <!-- Sử dụng đúng link ImgBB gốc và tỷ lệ cũ -->
+    <meta property="og:image" content="https://i.ibb.co/HDBcfbSP/Gemini-Generated-Image-d4v757d4v757d4v7.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     
     <title>PINT STORE - Authentic Only</title>
     
@@ -182,6 +179,7 @@
     <!-- Lá trang trí ngầm 2 -->
     <svg class="leaf-bg animate-float w-96 h-96 top-1/2 -right-24 text-green-700" style="animation-delay: -3s;" fill="currentColor" viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22l1-2.3A4.49,4.49 0 0,0 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25V8.25C13,7.25 19,7 19,7C17.5,10 13.5,11.5 9,12.5V14.5C14.5,13.5 17,11 17,8Z"/></svg>
 
+    <!-- Header đã bỏ dấu gạch ngang -->
     <header class="w-full bg-transparent pt-12 pb-6 px-4 flex flex-col justify-center items-center cursor-pointer transition duration-300 relative z-10" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">
         <h1 class="text-[36px] md:text-[56px] font-bold tracking-tight uppercase text-[#14532D]">
             PINT STORE
@@ -242,6 +240,7 @@
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
     </a>
 
+    <!-- Modal Chi Tiết Sản Phẩm -->
     <div id="product-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex flex-col p-4 transition-opacity overflow-y-auto">
         <button id="close-modal" class="absolute top-6 right-6 text-[#14532D] p-3 bg-white rounded-full hover:bg-[#F0FDF4] transition z-10 shadow-lg">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -264,6 +263,7 @@
         </div>
     </div>
 
+    <!-- Modal Mật Khẩu -->
     <div id="password-modal" class="fixed inset-0 z-[70] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="w-full max-w-sm text-center animate-fade-in bg-white rounded-3xl p-8 border border-[#DCFCE7] shadow-2xl">
             <h2 class="text-2xl font-bold mb-6 text-[#14532D]">Mã Xác Thực</h2>
@@ -276,6 +276,7 @@
         </div>
     </div>
 
+    <!-- Khu vực Admin Dashboard -->
     <div id="admin-section" class="fixed inset-0 z-[60] hidden bg-white overflow-y-auto">
         <div class="max-w-4xl mx-auto p-4 md:p-10 relative min-h-screen pb-24 animate-fade-in">
             <div class="flex justify-between items-center pb-6 mb-8 mt-4 border-b border-[#DCFCE7]">
@@ -406,7 +407,7 @@
         let currentFilter = 'Tất cả';
         let currentAdminFilter = 'Tất cả';
         let activeUploadCategory = 'Crocs';
-        let pendingDeleteId = null;
+        let pendingDeleteId = null; // Biến lưu ID sản phẩm chờ xóa
 
         // Elements
         const tagsContainer = document.getElementById('tags-container');
@@ -425,6 +426,7 @@
         const editSelectCat = document.getElementById('edit-category');
         const confirmModal = document.getElementById('custom-confirm-modal');
 
+        // Hàm nén ảnh tự động ngay trên trình duyệt trước khi up
         function compressImage(file, maxWidth = 1200, quality = 0.82) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -659,6 +661,7 @@
         }
         document.getElementById('close-admin').onclick = () => adminSec.classList.add('hidden');
 
+        // Logic tải ảnh lên: Đã bổ sung bước nén ảnh tự động
         const uploadBtn = document.getElementById('upload-btn');
         uploadBtn.onclick = async () => {
             const file = document.getElementById('image-input').files[0];
@@ -672,6 +675,7 @@
             sts.innerHTML = "<span>Đang tối ưu & nén ảnh...</span>";
 
             try {
+                // Tự động nén ảnh trên máy trước khi gửi
                 const compressedFile = await compressImage(file, 1200, 0.82);
 
                 sts.innerHTML = "<span>Đang tải lên hệ thống...</span>";
@@ -741,6 +745,7 @@
                     editModal.classList.remove('hidden');
                 };
 
+                // Bấm nút xóa -> Hiện hộp thoại thay thế
                 div.querySelector('.del-btn').onclick = () => {
                     pendingDeleteId = item.id;
                     confirmModal.classList.remove('hidden');
@@ -758,7 +763,7 @@
         document.getElementById('confirm-delete-btn').onclick = async () => {
             if (!pendingDeleteId) return;
             const delSts = document.getElementById('admin-delete-status');
-            confirmModal.classList.add('hidden');
+            confirmModal.classList.add('hidden'); // Ẩn modal ngay lập tức
             delSts.innerText = "Đang tiến hành xóa...";
             try {
                 await deleteDoc(doc(db, "products", pendingDeleteId));
